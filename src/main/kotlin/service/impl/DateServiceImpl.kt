@@ -10,7 +10,7 @@ class DateServiceImpl : DateService {
 
     override fun leftToProgrammerDay(dateString: String): Int {
         val date = Date.parseDate(dateString)
-        val programmerDate = Date.of(13, 9, date.year)
+        val programmerDate = find256day(date.year)
         return if (date > programmerDate) {
             DateUtils.daysBetween(date, programmerDate.plusYear(1))
         } else {
