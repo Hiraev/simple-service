@@ -33,5 +33,5 @@ fun Application.module() {
 }
 
 fun main() {
-    embeddedServer(Netty, port = 80, module = Application::module).start()
+    embeddedServer(Netty, port = 8080, module = Application::module).start()
 }
