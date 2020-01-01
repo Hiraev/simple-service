@@ -1,5 +1,5 @@
 group 'Polytech'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 buildscript {
     ext.kotlin_version = '1.3.61'
@@ -39,11 +39,29 @@ dependencies {
     compile "io.ktor:ktor-client-json:$ktor_version"
     compile "io.ktor:ktor-client-json-jvm:$ktor_version"
     compile "io.ktor:ktor-gson:$ktor_version"
-    
+
     testImplementation "junit:junit:$junit_version"
 }
 
-task startService(type: JavaExec) {
-    main = 'AppKt'
-    classpath = sourceSets.main.runtimeClasspath
+jar {
+    manifest {
+        attributes 'Main-Class': 'AppKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+task buildImage(type: Exec) {
+    dependsOn jar
+    executable 'docker'
+    args 'build', '-t', 'hiraev/simple-service', '.'
+}
+
+task stopService(type: Exec) {
+    executable 'docker'
+    args 'stop', 'simple-service'
+}
+
+task startService(type: Exec) {
+    executable 'docker'
+    args 'run', '-d', '-p', '80:8080', '--name', 'simple-service', '--rm', 'hiraev/simple-service'
 }
